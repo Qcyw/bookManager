@@ -2,7 +2,7 @@
 import sqlite3
 
 
-#initial setups
+# initial setups
 conn = sqlite3.connect('book.db')
 c = conn.cursor()
 c.execute("""CREATE TABLE IF NOT EXISTS books (
@@ -14,14 +14,13 @@ c.execute("""CREATE TABLE IF NOT EXISTS books (
             )""")
 
 
-
 def view_all():
     list = []
     c.execute("SELECT * FROM books")
     for i in c.fetchall():
         list.append(str(i[0]) + ". " + i[1] + " {" + i[2] + "} " + str(i[3]) + " " + str(i[4]))
     return list
-    
+
 
 def add_book(book_name, author, year, ISBN):
     with conn:
@@ -31,7 +30,8 @@ def add_book(book_name, author, year, ISBN):
 
 def delete_book(id):
     with conn:
-        c.execute("DELETE from books WHERE book_id = ? ", (id,))
+        book = view_all()[id]
+        c.execute("DELETE from books WHERE book_id = ? ", (book[0],))
 
 
 def clear():
@@ -43,17 +43,7 @@ def search_book(title, author, year, ISBN):
     list = []
     c.execute("SELECT * FROM books where book_name like ? and author like ? or ISBN = ? ", (title, author, ISBN))
     for i in c.fetchall():
-        list.append(i[0] + " " + i[1] + " " + str(i[2]) + " " + str(i[3]))
+        list.append(str(i[0]) + ". " + i[1] + " {" + i[2] + "} " + str(i[3]) + " " + str(i[4]))
     return list
-
-
-
-
-
-
-
-
-
-
 
 
